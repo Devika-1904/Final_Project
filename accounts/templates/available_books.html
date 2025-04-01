@@ -1,0 +1,464 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Available Books</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #0A183D;
+            --secondary-color: #08192D;
+            --highlight-color: #F9295A;
+            --text-color-light: #ffffff;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: var(--primary-color);
+            color: var(--text-color-light);
+            max-width: 100vw;
+            overflow-x: hidden;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--secondary-color);
+            padding: 15px 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--text-color-light);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-color-light);
+            font-size: 16px;
+        }
+
+        .nav-links a:hover {
+            color: var(--highlight-color);
+        }
+
+        .book-card {
+            width: 18rem;
+            margin: 10px auto;
+            display: none; /* Initially hide all books */
+        }
+
+        .card-img-top {
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .filter-buttons {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+      
+        .search-bar {
+        width: 60%;
+        max-width: 500px;
+        margin: auto;
+        padding: 10px 15px;
+        border: 2px solid #F9295A;
+        border-radius: 25px;
+        outline: none;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+        font-size: 16px;
+        transition: all 0.3s ease-in-out;
+    }
+
+    .search-bar:focus {
+        border-color: #ff004f;
+        box-shadow: 0px 4px 12px rgba(255, 0, 79, 0.5);
+    }
+
+    .search-bar::placeholder {
+        color: #aaa;
+        font-style: italic;
+    }
+    .search-form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    padding: 10px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.search-form input[type="text"] {
+    flex: 1;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+}
+
+.search-form select {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background: white;
+    cursor: pointer;
+}
+
+.search-form button {
+    padding: 10px 15px;
+    font-size: 16px;
+    color: white;
+    background: var(--highlight-color);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.book-card {
+    background-color: rgba(255, 255, 255, 0.9); /* Slight transparency for better contrast */
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+    text-align: center;
+    overflow: hidden; /* Ensures content does not overflow */
+    transition: transform 0.3s, box-shadow 0.3s;
+    padding: 0; /* Removed padding to rely on better content spacing */
+    margin: 10px;
+    width: 18rem;
+}
+
+.book-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+}
+
+.book-card img {
+    width: 100%;
+    border-radius: 10px 10px 0 0; /* Rounded corners for the top */
+    max-height: 180px; /* Constrain image height */
+    object-fit: cover; /* Ensures the image maintains proportions */
+    margin-bottom: 0; /* Adjusted spacing */
+}
+
+.card-content {
+    padding: 15px;
+}
+
+.card-content h3 {
+    font-size: 1.2rem;
+    color: #08192D;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+.card-content p {
+    font-size: 0.95rem;
+    color: #555; /* Neutral color for text */
+    margin: 4px 0;
+}
+.subject-heading {
+    color: var(--text-color-light); /* Bootstrap Primary Blue */
+    font-size: 24px;
+    font-weight: bold;
+    margin-top: 20px;
+    text-align: center;
+    text-transform: uppercase;
+    border-bottom: 2px solid var(--highlight-color);
+    padding-bottom: 5px;
+}
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--secondary-color);
+    padding: 15px 30px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--text-color-light);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-color-light);
+            font-size: 16px;
+        }
+
+        .nav-links a:hover {
+            color: var(--highlight-color);
+        }
+
+        .user-icon {
+            width: 30px;
+            height: 30px;
+            background-color: var(--highlight-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .user-icon img {
+            width: 20px;
+            height: 20px;
+        }
+
+
+
+    </style>
+
+</head>
+<body>
+    <!-- Header Section -->
+    <div class="header">
+        <div class="logo">Edubridge</div>
+        <div class="nav-links">
+            {% if user.role == 'alumni' %}
+                <a href="{% url 'AlumniFrontPage' %}">Home</a>
+            {% else %}
+                <a href="{% url 'home' %}">Home</a>
+            {% endif %}
+            <a href="{% url 'Donate' %}">Donate</a>
+            <a href="{% url 'manage_requests' %}">Request</a>
+            <a href="{% url 'chat:chat_list' %}" >Alumini Connect</a>
+        </div>
+        <div class="user-icon">
+            <a href="{% url 'user_dashboard' %}">
+                <img src="{% static 'images/user-icon.png' %}" alt="User">
+            </a>
+        </div>
+        </div>
+    </div>
+
+    <div class="container mt-4">
+        <h2 class="text-center">Available Books</h2>
+    
+       
+        <form method="GET" class="search-form">
+            <input type="text" id="searchInput" name="q" placeholder="Search books..." value="{{ query }}">
+            <button type="button" id="micButton" onclick="startVoiceSearch()">🎤</button>
+        
+            <select name="filter_by">
+                <option value="textbook_name" {% if filter_by == "textbook_name" %}selected{% endif %}>Book Name</option>
+                <option value="author_name" {% if filter_by == "author_name" %}selected{% endif %}>Author</option>
+                <option value="subject" {% if filter_by == "subject" %}selected{% endif %}>Subject</option>
+                <option value="semester" {% if filter_by == "semester" %}selected{% endif %}>Semester</option>
+            </select>
+        
+            <button type="submit">Search</button>
+        </form>
+       
+        <div class="filter-buttons text-center mb-3">
+            <button class="btn btn-success" onclick="filterBooks('donated')">Donated Books</button>
+            <button class="btn btn-warning" onclick="filterBooks('paid')">Paid Books</button>
+            <button class="btn btn-info" onclick="filterBooks('pdf')">PDFs</button>
+        </div>
+        
+        <div class="d-flex flex-wrap justify-content-center">
+            <!-- Donated Books Section -->
+            <div id="donated-books-section">
+                {% for subject, books in grouped_donated_books.items %}
+                    <h3 class="subject-heading text-center">{{ subject }}</h3>
+                    <div class="d-flex flex-wrap justify-content-center">
+                        {% for book in books %}
+                        <div class="card book-card donated" onclick="location.href='{% url 'book_detail' book.id %}'">
+                            {% if book.image %}
+                                <img src="{{ book.image.url }}" class="card-img-top" alt="{{ book.textbook_name }}">
+                            {% else %}
+                                <img src="{% static 'images/default_book.png' %}" class="card-img-top" alt="Default Image">
+                            {% endif %}
+                            <div class="card-body">
+                                <h5 class="card-title">{{ book.textbook_name }}</h5>
+                                <p class="card-text"><strong>Author:</strong> {{ book.author_name }}</p>
+                                <p class="card-text"><strong>Semester:</strong> {{ book.semester }}</p>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% empty %}
+                    <p class="text-center no-books-message">No donated books available.</p>
+                {% endfor %}
+            </div>
+        
+            <!-- Paid Books Section -->
+            <div id="paid-books-section" style="display: none;">
+                {% for subject, books in grouped_paid_books.items %}
+                    <h3 class="subject-heading text-center">{{ subject }}</h3>
+                    <div class="d-flex flex-wrap justify-content-center">
+                        {% for book in books %}
+                        <div class="card book-card paid" onclick="location.href='{% url 'textbook_detail' book.id %}'">
+                            {% if book.image %}
+                                <img src="{{ book.image.url }}" class="card-img-top" alt="{{ book.name }}">
+                            {% else %}
+                                <img src="{% static 'images/default_book.png' %}" class="card-img-top" alt="Default Image">
+                            {% endif %}
+                            <div class="card-body">
+                                <h5 class="card-title">{{ book.name }}</h5>
+                                <p class="card-text"><strong>Author:</strong> {{ book.author }}</p>
+                                <p class="card-text"><strong>Semester:</strong> {{ book.semester }}</p>
+                                <p class="card-text"><strong>Price:</strong> ₹{{ book.price }}</p>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% empty %}
+                    <p class="text-center no-books-message">No paid books available.</p>
+                {% endfor %}
+            </div>
+        
+            <!-- PDFs Section -->
+            <div id="pdf-books-section" style="display: none;">
+                {% for subject, books in grouped_pdf_books.items %}
+                    <h3 class="subject-heading text-center">{{ subject }}</h3>
+                    <div class="d-flex flex-wrap justify-content-center">
+                        {% for pdf in books %}
+                        <div class="card book-card pdf" onclick="location.href='{% url 'study_material_detail' pdf.id %}'">
+                            {% if pdf.image %}
+                                <img src="{{ pdf.image.url }}" class="card-img-top" alt="{{ pdf.title }}">
+                            {% else %}
+                                <img src="{% static 'images/default_book.png' %}" class="card-img-top" alt="Default Image">
+                            {% endif %}
+                            <div class="card-body">
+                                <h5 class="card-title">{{ pdf.title }}</h5>
+                                <p class="card-text"><strong>Semester:</strong> {{ pdf.semester }}</p>
+                                <p class="card-text"><strong>Module:</strong> {{ pdf.module }}</p>       
+                                <p class="card-text"><strong>Description:</strong> {{ pdf.description }}</p>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% empty %}
+                    <p class="text-center no-books-message">No PDFs available.</p>
+                {% endfor %}
+            </div>
+        </div>
+        
+        
+        
+    
+    <script>
+        document.querySelectorAll('.book-card').forEach(card => {
+    card.style.display = "block";
+});
+
+function filterBooks(category) {
+    // Get all category sections
+    let donatedSection = document.getElementById('donated-books-section');
+    let paidSection = document.getElementById('paid-books-section');
+    let pdfSection = document.getElementById('pdf-books-section');
+
+    // Hide all sections first
+    donatedSection.style.display = 'none';
+    paidSection.style.display = 'none';
+    pdfSection.style.display = 'none';
+
+    // Show only the selected category
+    if (category === 'donated') {
+        donatedSection.style.display = 'block';
+    } else if (category === 'paid') {
+        paidSection.style.display = 'block';
+    } else if (category === 'pdf') {
+        pdfSection.style.display = 'block';
+    }
+}
+
+function startVoiceSearch() {
+    if (!('webkitSpeechRecognition' in window)) {
+        alert("Your browser does not support voice search. Please use Chrome or Edge.");
+        return;
+    }
+
+    let recognition = new webkitSpeechRecognition();
+    recognition.lang = 'en-US';
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    recognition.start();
+
+    recognition.onresult = function(event) {
+        let transcript = event.results[0][0].transcript.trim();
+        
+        // Remove the trailing period if it exists
+        transcript = transcript.replace(/\.$/, '');
+
+        document.getElementById("searchInput").value = transcript;
+
+        // Submit the form to apply the search
+        document.getElementById("searchForm").submit();
+    };
+
+    recognition.onerror = function(event) {
+        console.error("Speech recognition error:", event.error);
+    };
+}
+
+function searchBooks() {
+    let input = document.getElementById("searchInput").value.toLowerCase();
+    
+    // Get all book sections
+    let sections = {
+        "donated": document.getElementById("donated-books-section"),
+        "paid": document.getElementById("paid-books-section"),
+        "pdf": document.getElementById("pdf-books-section"),
+    };
+
+    if (!input) {
+        // Show all books if search is empty
+        Object.values(sections).forEach(section => section.style.display = "block");
+        document.querySelectorAll('.book-card').forEach(card => card.style.display = "block");
+        return;
+    }
+
+    Object.entries(sections).forEach(([key, section]) => {
+        let visible = false;
+        section.querySelectorAll('.book-card').forEach(card => {
+            let title = card.querySelector(".card-title").textContent.toLowerCase();
+            let subject = card.querySelector(".card-text strong") ? card.querySelector(".card-text strong").nextSibling.textContent.trim().toLowerCase() : "";
+            let txtValue = title + " " + subject;
+
+            if (txtValue.includes(input)) {
+                card.style.display = "block";
+                visible = true;
+            } else {
+                card.style.display = "none";
+            }
+        });
+
+        // Show/hide section based on search results
+        section.style.display = visible ? "block" : "none";
+    });
+}
+
+
+    </script>
+        
+</body>
+</html>

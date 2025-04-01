@@ -1,0 +1,362 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donate Textbook</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/4.0.2/tesseract.min.js"></script>
+    <style>
+        :root {
+            --blue-primary: #0A183D;
+            --blue-hover: #08192D;
+            --green-primary: #F9295A;
+            --white: #ffffff;
+            --light-gray: #f0f0f0;
+            --hover-green: #28a745;
+        }
+
+        body { 
+            background-color: var(--blue-primary);
+
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+       /* Header */
+       .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--blue-hover);
+            padding: 15px 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--white);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--white);
+            font-size: 16px;
+        }
+
+        .nav-links a:hover {
+            color: var(--green-primary);
+        }
+
+        .user-icon {
+            width: 30px;
+            height: 30px;
+            background-color: var(--green-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .user-icon img {
+            width: 20px;
+            height: 20px;
+        }
+
+        .form-container {
+            background-color: var(--white);
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 700px;
+            margin: 50px auto;
+            color: var(--blue-primary);
+        }
+
+        .form-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-weight: bold;
+            width: 30%;
+        }
+
+        input, select, textarea, button {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid var(--blue-primary);
+            border-radius: 6px;
+            width: 65%;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        button {
+            background-color: var(--green-primary);
+            color: var(--white);
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        button:hover {
+            background-color: var(--blue-hover);
+        }
+
+        .ocr-output {
+            margin-top: 20px;
+            padding: 15px;
+            background: var(--light-gray);
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            overflow-y: auto;
+            max-height: 250px;
+        }
+
+        .ocr-output span {
+            padding: 12px;
+            text-align: center;
+            background: var(--white);
+            border: 1px solid var(--blue-primary);
+            border-radius: 8px;
+            cursor: grab;
+            transition: transform 0.2s ease, background 0.3s ease;
+            user-select: none;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .ocr-output span:hover {
+            background: var(--hover-green);
+            color: var(--white);
+            transform: scale(1.05);
+        }
+
+        .drop-target {
+            border: 2px dashed var(--blue-primary);
+            padding: 10px;
+            min-height: 30px;
+            text-align: left;
+            transition: background 0.3s ease;
+        }
+
+        .drop-target.drag-over {
+            background: var(--light-gray);
+        }
+
+        #loadingSpinner {
+            font-weight: bold;
+            color: var(--green-primary);
+            margin-top: 10px;
+        }
+
+        /* Star Rating Dropdown Styling */
+        .star-rating select {
+            appearance: none; /* Remove default arrow */
+            background: var(--white);
+            border: 1px solid var(--blue-primary);
+            border-radius: 6px;
+            padding: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .star-rating {
+            position: relative;
+            width: 65%;
+        }
+
+        .star-rating::after {
+            content: "★";
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 20px;
+            color: var(--blue-primary);
+            pointer-events: none;
+        }
+
+        .star-rating select option {
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        .star-rating select option[value="1"] { color: #ffcc00; }
+        .star-rating select option[value="2"] { color: #ffcc00; }
+        .star-rating select option[value="3"] { color: #ffcc00; }
+        .star-rating select option[value="4"] { color: #ffcc00; }
+        .star-rating select option[value="5"] { color: #ffcc00; }
+    
+        div.asw-footer{
+    display: none;
+}
+</style>
+</head>
+<body>
+    <!-- Header Section -->
+    <div class="header">
+        <div class="logo">Edubridge</div>
+        <div class="nav-links">
+            {% if user.role == 'alumni' %}
+                <a href="{% url 'AlumniFrontPage' %}">Home</a>
+            {% else %}
+                <a href="{% url 'home' %}">Home</a>
+            {% endif %}
+            <a href="{% url 'Donate' %}">Donate</a>
+            {% if user.role != 'alumni' %}
+                <a href="{% url 'manage_requests' %}">Request</a>
+            {% endif %}
+            <a href="{% url 'chat:chat_list' %}">Alumni Chat</a>
+        </div>
+        <div class="user-icon">
+            <a href="{% url 'user_dashboard' %}">
+                <img src="{% static 'images/user-icon.png' %}" alt="User">
+            </a>
+        </div>
+    </div>
+    
+<div class="form-container">
+    <h1>Donate Textbook</h1>
+    <form id="donationForm" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="textbook_name">Textbook Name:</label>
+            <input type="text" id="textbook_name" name="textbook_name" class="drop-target" required>
+        </div>
+        <div class="form-group">
+            <label for="author_name">Author Name:</label>
+            <input type="text" id="author_name" name="author_name" class="drop-target" required>
+        </div>
+        <div class="form-group">
+            <label for="subject">Subject:</label>
+            <input type="text" id="subject" name="subject" class="drop-target" required>
+        </div>
+        <div class="form-group">
+            <label for="semester">Semester:</label>
+            <input type="number" id="semester" name="semester" min="1" max="8" required>
+        </div>
+        <div class="form-group">
+            <label for="image">Upload Image:</label>
+            <input type="file" id="image" name="image" accept="image/*" required onchange="extractText()">
+        </div>
+
+        <h3>Extracted Text  (Drag & Drop):</h3>
+        <div class="ocr-output" id="ocrText"></div>
+        <div id="loadingSpinner" style="display:none;">Extracting Text... Please wait.</div>
+
+        <div class="form-group">
+            <label for="feedback">Feedback:</label>
+            <textarea id="feedback" name="feedback" placeholder="Share your feedback about the textbook..."></textarea>
+        </div>
+
+        <!-- Star Rating Dropdown -->
+        <div class="form-group star-rating">
+            <label for="rating">Rating:</label>
+            <select id="rating" name="rating">
+                <option value="" disabled selected>-- Choose --</option>
+                <option value="1">1 Star</option>
+                <option value="2">2 Stars</option>
+                <option value="3">3 Stars</option>
+                <option value="4">4 Stars</option>
+                <option value="5">5 Stars</option>
+            </select>
+        </div>
+
+        <button type="submit">Donate Now</button>
+    </form>
+</div>
+
+<script>
+function extractText() {
+    document.getElementById("loadingSpinner").style.display = "block";
+    let formData = new FormData();
+    let file = document.getElementById("image").files[0];
+    formData.append("image", file);
+    formData.append("csrfmiddlewaretoken", "{{ csrf_token }}");
+
+    fetch("{% url 'extract_text' %}", {
+        method: "POST",
+        body: formData,
+    })
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById("loadingSpinner").style.display = "none";
+        let ocrContainer = document.getElementById("ocrText");
+        ocrContainer.innerHTML = "";
+
+        if (data.error) {
+            ocrContainer.innerHTML = `<span style="color:red;">${data.error}</span>`;
+            return;
+        }
+
+        if (data.extracted_text) {
+            data.extracted_text.forEach(line => {
+                let span = document.createElement("span");
+                span.className = "draggable";
+                span.textContent = line;
+                span.draggable = true;
+                span.addEventListener("dragstart", dragStart);
+                ocrContainer.appendChild(span);
+            });
+        } else {
+            ocrContainer.innerHTML = "<span>No text found or poor image quality!</span>";
+        }
+    })
+    .catch(() => {
+        document.getElementById("loadingSpinner").style.display = "none";
+        ocrContainer.innerHTML = "<span style='color:red;'>Failed to process image!</span>";
+    });
+}
+
+function dragStart(event) {
+    event.dataTransfer.setData("text/plain", event.target.textContent);
+}
+
+// Add event listeners for drop targets
+document.querySelectorAll(".drop-target").forEach(target => {
+    target.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        target.classList.add("drag-over");
+    });
+
+    target.addEventListener("dragleave", () => {
+        target.classList.remove("drag-over");
+    });
+
+    target.addEventListener("drop", (e) => {
+        e.preventDefault();
+        target.classList.remove("drag-over");
+        let text = e.dataTransfer.getData("text/plain");
+        if (e.target.value) {
+            e.target.value += `  ${text}`; // Append text with a comma separator
+        } else {
+            e.target.value = text;
+        }
+    });
+});
+function confirmDonation() {
+            return confirm('Are you sure you want to donate this textbook?');
+        }
+</script>
+<script src="https://website-widgets.pages.dev/dist/sienna.min.js" defer></script>
+</body>
+</html>

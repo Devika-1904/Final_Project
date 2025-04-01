@@ -1,0 +1,307 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edubridge - Home</title>
+    <style>
+        :root {
+            --primary-color: #0A183D;
+            --secondary-color: #08192D;
+            --highlight-color: #F9295A;
+            --text-color-light: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: var(--primary-color);
+            color: var(--text-color-light);
+            max-width: 100vw;
+            overflow-x: hidden;
+        }
+        .wave-container {  
+  height: 40vh;
+  background-color: #0a183d;
+  position: relative;
+}
+
+.wave-container::before {   
+  content: "";
+  width: 100%;
+  height: 167px;
+  position: absolute;
+  bottom: -0.3%;
+  left: 0;
+  background-size: auto;
+  background-repeat: repeat no-repeat;
+  background-position: 41vw bottom;
+  background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 1200  109' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M0 80L50 75C100 70 200 60 300 41C400 21 500 -8 600 1C700 11 800 60 900 80C1000 100 1100 90 1150 85L1200 80V110H1150C1100 110 1000 110 900 110C800 110 700 110 600 110C500 110 400 110 300 110C200 110 100 110 50 110H0V80Z' fill='%23ffffff'/></svg>");
+}
+
+@media(max-width:850px) {
+  .wave-container::before {    
+    height: 83.5px
+  }  
+}
+.wave-container2 {  
+  height: 40vh;
+  background-color: #ffffff;
+  position: relative;
+}
+
+.wave-container2::before {   
+  content: "";
+  width: 100%;
+  height: 167px;
+  position: absolute;
+  bottom: -0.3%;
+  left: 0;
+  background-size: auto;
+  background-repeat: repeat no-repeat;
+  background-position: 41vw bottom;
+  background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 1200  109' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M0 80L50 75C100 70 200 60 300 41C400 21 500 -8 600 1C700 11 800 60 900 80C1000 100 1100 90 1150 85L1200 80V110H1150C1100 110 1000 110 900 110C800 110 700 110 600 110C500 110 400 110 300 110C200 110 100 110 50 110H0V80Z' fill='%230a183d'/></svg>");
+}
+
+@media(max-width:850px) {
+  .wave-container2::before {    
+    height: 83.5px
+  }  
+}
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--secondary-color);
+            padding: 15px 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--text-color-light);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-color-light);
+            font-size: 16px;
+        }
+
+        .nav-links a:hover {
+            color: var(--highlight-color);
+        }
+
+        .user-icon {
+            width: 30px;
+            height: 30px;
+            background-color: var(--highlight-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .user-icon img {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Main Section */
+        .main-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 50px;
+            min-height: 20%;
+        }
+
+        .main-section .content {
+            max-width: 50%;
+        }
+
+        .main-section h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .main-section p {
+            font-size: 18px;
+            margin-bottom: 30px;
+            color: var(--text-color-light);
+        }
+
+        .button-container {
+            display: flex;
+            gap: 20px;
+        }
+
+        .button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .button-primary {
+            background-color: var(--highlight-color);
+            color: var(--text-color-light);
+        }
+
+        .button-primary:hover {
+            transform: scale(1.05);
+        }
+
+        .button-secondary {
+            background-color: var(--text-color-light);
+            color: var(--highlight-color);
+        }
+
+        .button-secondary:hover {
+            transform: scale(1.05);
+        }
+
+        .main-section img {
+            max-width: 40%;
+            border-radius: 10px;
+        }
+
+        /* SVG Divider */
+        .divider {
+            margin: 0;
+        }
+        .bg {
+                background-color: #fdfdfd;
+        }
+
+        /* Stats Section */
+        .stats-section {
+            background-color: var(--text-color-light);
+            padding: 50px 20px;
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+        }
+
+        .stat-card {
+       
+            padding: 20px 30px;
+            border-radius: 10px;
+            text-align: center;
+            width: 250px;
+            color: var(--text-color-light);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-card h3 {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+
+        .stat-card p {
+            font-size: 18px;
+        }
+
+        /* Footer */
+        .footer {
+            background-color: var(--text-color-light);
+            color: var(--secondary-color);
+            text-align: center;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .footer p {
+            font-size: 14px;
+        }
+        div.asw-footer{
+    display: none;
+}
+
+
+    </style>
+</head>
+<body>
+    <!-- Header Section -->
+    <div class="header">
+        <div class="logo">Edubridge</div>
+        <div class="nav-links">
+            <a href="{% url 'AlumniFrontPage' %}">Home</a>
+            <a href="{% url 'Donate' %}">Donate</a>
+            <a href="{% url 'chat:chat_list' %}" >Alumini Connect</a>
+        </div>
+        <div class="user-icon">
+            <a href="{% url 'user_dashboard' %}">
+                <img src="{% static 'images/user-icon.png' %}" alt="User">
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Section -->
+    <div class="main-section">
+        <div class="content">
+            <h1>Welcome to Edubridge</h1>
+            <p>Connecting students through book donations, study materials, and alumni insights.</p>
+            <div class="button-container">
+                <a href="{% url 'Donate' %}" class="button button-primary" style="text-decoration: none;">Share</a> <!-- Button linking to donation_dashboard -->
+                <a href="{% url 'chat:chat_list' %}" class="button button-secondary" style="text-decoration: none;">Connect</a> <!-- Button linking to Home -->
+                </div><br>
+            
+        </div>
+        <img src="{% static 'images/side.png' %}" alt="Edubridge Illustration">
+    </div>
+    
+    <div class="bg">
+        <div class="wave-container"></div>
+
+
+    <!-- Stats Section -->
+    <div class="stats-section">
+        <div class="stats-section">
+            <div class="stat-card" style="background-color: #C81F48;">
+                <h3>{{ users_count }}</h3>
+                <p>Total Users</p>
+            </div>
+            <div class="stat-card" style="background-color: #C81F48;">
+                <h3>{{ total_books }}</h3>
+                <p>Total Books</p>
+            </div>
+            <div class="stat-card" style="background-color: #C81F48;">
+                <h3>{{ alumni_count }}</h3>
+                <p>Total Alumni</p>
+            </div>
+        </div>
+    </div>
+    <script src="https://website-widgets.pages.dev/dist/sienna.min.js" defer></script>
+</script>
+<script src="https://cdn.botpress.cloud/webchat/v2.2/inject.js"></script>
+<script src="https://files.bpcontent.cloud/2025/01/19/15/20250119155300-GR72CREA.js"></script>
+
+<!-- Footer -->
+    <div class="footer">
+        <p>&copy; 2025 Edubridge. All rights reserved.</p>
+    </div>
+ 
+
+
+    
+</body>
+</html>

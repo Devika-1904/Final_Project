@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="chat-container">
+    <div class="header">
+        <h2>Alumni Chat Groups</h2>
+        <button class="create-group-btn" onclick="location.href='{% url 'create_group' %}'">+ Create New Group</button>
+    </div>
+
+    {% if messages %}
+    <div class="alert alert-success">
+        {% for message in messages %}
+            {{ message }}
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="groups-list">
+        {% for group in groups %}
+        <div class="group-card">
+            <h3>{{ group.name }}</h3>
+            <div class="group-info">
+                <p>Created by: {{ group.created_by.username }}</p>
+                <p>Members: {{ group.members.count }}</p>
+            </div>
+            <button class="join-chat-btn" onclick="location.href='{% url 'join_chat' group.id %}'">Join Chat</button>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+    .chat-container {
+        padding: 20px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #007bff;
+        padding: 15px 20px;
+        color: white;
+        border-radius: 5px;
+        margin-bottom: 20px;
+    }
+
+    .create-group-btn {
+        background-color: white;
+        color: #007bff;
+        border: none;
+        padding: 8px 15px;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .alert {
+        padding: 15px;
+        margin-bottom: 20px;
+        border-radius: 4px;
+    }
+
+    .alert-success {
+        background-color: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+    }
+
+    .group-card {
+        border: 1px solid #ddd;
+        padding: 20px;
+        border-radius: 5px;
+        margin-bottom: 15px;
+        background: white;
+    }
+
+    .join-chat-btn {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 8px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+    div.asw-footer{
+    display: none;
+}
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        if (localStorage.getItem('openAlumniChat') === 'true') {
+            localStorage.removeItem('openAlumniChat');
+            {% if auto_join and default_group %}
+                window.location.href = "{% url 'chat:join_chat' default_group.id %}";
+            {% endif %}
+        }
+    });
+</script>
+<script src="https://website-widgets.pages.dev/dist/sienna.min.js" defer></script>
+{% endblock %}

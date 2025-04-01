@@ -1,0 +1,85 @@
+
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="create-group-container">
+    <h2>Create New Chat Group</h2>
+    
+    <form method="POST">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="name">Group Name:</label>
+            <input type="text" id="name" name="name" required>
+        </div>
+        <button type="submit" class="create-btn">Create Group</button>
+        <a href="{% url 'chat:chat_list' %}" class="cancel-btn">Cancel</a>
+    </form>
+</div>
+
+<style>
+    .create-group-container {
+        max-width: 500px;
+        margin: 40px auto;
+        padding: 30px;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+        color: #14213d;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 8px;
+        color: #333;
+        font-weight: 500;
+    }
+
+    input[type="text"] {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 16px;
+    }
+
+    .create-btn {
+        background: #80071d;
+        color: white;
+        border: none;
+        padding: 12px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        width: 100%;
+        font-size: 16px;
+        margin-bottom: 10px;
+    }
+
+    .create-btn:hover {
+        background: #660618;
+    }
+
+    .cancel-btn {
+        display: block;
+        text-align: center;
+        color: #666;
+        text-decoration: none;
+    }
+
+    .cancel-btn:hover {
+        text-decoration: underline;
+    }
+    div.asw-footer{
+    display: none;
+}
+</style>
+<script src="https://website-widgets.pages.dev/dist/sienna.min.js" defer></script>
+{% endblock %}

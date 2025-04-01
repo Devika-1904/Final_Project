@@ -1,0 +1,544 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+    <title>{{ material.material_name }} - Details</title>
+    <style>
+        :root {
+            --primary-color: #0A183D;
+            --secondary-color: #08192D;
+            --highlight-color: #F9295A;
+            --text-color-light: #ffffff;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: var(--primary-color);
+            color: var(--text-color-light);
+            max-width: 100vw;
+            overflow-x: hidden;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--secondary-color);
+            padding: 15px 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--text-color-light);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-color-light);
+            font-size: 16px;
+        }
+
+        .nav-links a:hover {
+            color: var(--highlight-color);
+        }
+
+        .user-icon {
+            width: 30px;
+            height: 30px;
+            background-color: var(--highlight-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .user-icon img {
+            width: 20px;
+            height: 20px;
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            max-width: 900px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .material-image-container {
+            flex: 1;
+            text-align: center;
+        }
+
+        .material-image {
+            width: 100%;
+            max-width: 250px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .details-container {
+            flex: 2;
+            padding-left: 30px;
+        }
+
+        .details-container h2 {
+            color: #08192D;
+            font-size: 2rem;
+        }
+
+        .details-container p {
+            font-size: 1.1rem;
+            color: #333;
+            margin: 10px 0;
+        }
+
+        .download-btn {
+            display: inline-block;
+            background-color: #F9295A;
+            color: white;
+            padding: 14px 32px;
+            margin-top: 20px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            text-align: center;
+            font-weight: bold;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            max-width: 250px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .download-btn:hover {
+            background-color: #f40039;
+            transform: translateY(-4px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Reader Controls Styling */
+.reader-controls {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-top: 15px;
+}
+
+.reader-btn {
+    background-color: #F9295A;
+    color: white;
+    padding: 14px 24px;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.reader-btn:hover {
+    background-color: #f40039;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.reader-btn:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.reader-btn .icon {
+    font-size: 1.2rem;
+}
+
+/* PDF Viewer Styling */
+.pdf-viewer {
+    width: 100%;
+    height: 600px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: auto;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+/* Progress Bar Styling */
+.progress-bar {
+    width: 100%;
+    height: 10px;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+    margin-top: 10px;
+    position: relative;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background-color: #F9295A;
+    border-radius: 5px;
+    width: 0;
+    transition: width 0.3s ease;
+}
+
+        .reader-container h2 {
+            color: var(--secondary-color);
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+        }
+
+        .pdf-viewer {
+            width: 100%;
+            height: 500px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: auto;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .pdf-viewer canvas {
+            margin: 0 auto;
+        }
+
+        .reader-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+
+        .reader-btn {
+            background-color: #F9295A;
+            color: white;
+            padding: 14px 24px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .reader-btn:hover {
+            background-color: #f40039;
+            transform: translateY(-2px);
+        }
+
+        .reader-btn:active {
+            transform: translateY(2px);
+        }
+
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .slider-container label {
+            font-size: 0.9rem;
+            color: #333;
+        }
+
+        .slider {
+            width: 100px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+            margin-top: 10px;
+            position: relative;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background-color: #F9295A;
+            border-radius: 5px;
+            width: 0;
+            transition: width 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        div.asw-footer{
+    display: none;
+}
+    </style>
+</head>
+<body>
+    <!-- Header Section -->
+    <div class="header">
+        <div class="logo">Edubridge</div>
+        <div class="nav-links">
+            <a href="{% url 'home' %}">Home</a>
+            <a href="{% url 'Donate' %}">Donate</a>
+            <a href="{% url 'manage_requests' %}">Request</a>
+            <a href="{% url 'alumini' %}">Alumni Chat</a>
+        </div>
+        <div class="user-icon">
+            <img src="{% static 'images/user-icon.png' %}" alt="User">
+        </div>
+    </div>
+
+    <!-- Study Material Details -->
+    <div class="container">
+        <div class="material-image-container">
+            {% if material.image %}
+                <img src="{{ material.image.url }}" alt="{{ material.material_name }}" class="material-image">
+            {% else %}
+                <img src="{% static 'images/4.jpg' %}" alt="Default Material Image" class="material-image">
+            {% endif %}
+        </div>
+
+        <div class="details-container">
+            <h2>{{ material.material_name }}</h2>
+            <p><strong>Subject:</strong> {{ material.subject }}</p>
+            <p><strong>Module:</strong> {{ material.module }}</p>
+            <p><strong>Semester:</strong> {{ material.semester }}</p>
+
+            {% if material.description %}
+                <p><strong>Description:</strong> {{ material.description }}</p>
+            {% else %}
+                <p><strong>Description:</strong> No Description Provided</p>
+            {% endif %}
+
+            <a href="{{ material.file.url }}" class="download-btn" download>Download Material</a>
+        </div>
+    </div>
+
+    <!-- PDF Reader Section -->
+    <div class="reader-container">
+        <h2>PDF Audio Reader</h2>
+        
+        <!-- PDF Viewer -->
+        <div class="pdf-viewer" id="pdfViewer"></div>
+    
+        <!-- Progress Bar -->
+        <div class="progress-bar">
+            <div class="progress-bar-fill" id="progressBar"></div>
+        </div>
+    
+        <!-- Audio Control Buttons -->
+        <div class="reader-controls">
+            <button class="reader-btn" onclick="skipBackward()">
+                <span class="icon">⏪</span> 5s
+            </button>
+            <button class="reader-btn" onclick="playAudio()">
+                <span class="icon">▶️</span> Play
+            </button>
+            <button class="reader-btn" onclick="pauseAudio()">
+                <span class="icon">⏸️</span> Pause
+            </button>
+            <button class="reader-btn" onclick="stopAudio()">
+                <span class="icon">⏹️</span> Stop
+            </button>
+            <button class="reader-btn" onclick="skipForward()">
+                <span class="icon">⏩</span> 5s
+            </button>
+            <div class="slider-container">
+                <label for="speed">Speed:</label>
+                <input type="range" id="speed" min="0.5" max="2" step="0.1" value="1" class="slider" onchange="setSpeed(this.value)">
+            </div>
+            <div class="slider-container">
+                <label for="volume">Volume:</label>
+                <input type="range" id="volume" min="0" max="1" step="0.1" value="1" class="slider" onchange="setVolume(this.value)">
+            </div>
+        </div>
+    </div>
+    <script>
+let speechSynthesis = window.speechSynthesis;
+let utterance = new SpeechSynthesisUtterance();
+let isPaused = false;
+let textContent = "";
+let currentPage = 1;
+let totalPages = 0;
+let pdfDoc = null;
+let startTime = 0; // Track the start time of the current utterance
+let currentCharIndex = 0; // Track the current character being read
+
+// Load PDF and render it
+function loadPDF(url) {
+    let loadingTask = pdfjsLib.getDocument(url);
+    loadingTask.promise.then(function (pdf) {
+        pdfDoc = pdf;
+        totalPages = pdf.numPages;
+        renderAllPages();
+    });
+}
+
+// Render all pages of the PDF
+function renderAllPages() {
+    let container = document.getElementById('pdfViewer');
+    container.innerHTML = ''; // Clear previous content
+
+    for (let i = 1; i <= totalPages; i++) {
+        pdfDoc.getPage(i).then(function (page) {
+            let scale = 1.5;
+            let viewport = page.getViewport({ scale: scale });
+
+            let canvas = document.createElement('canvas');
+            let context = canvas.getContext('2d');
+            canvas.height = viewport.height;
+            canvas.width = viewport.width;
+
+            let renderContext = {
+                canvasContext: context,
+                viewport: viewport
+            };
+
+            container.appendChild(canvas);
+            page.render(renderContext);
+        });
+    }
+}
+
+// Load PDF text for speech synthesis
+function loadPDFText(url) {
+    let loadingTask = pdfjsLib.getDocument(url);
+    loadingTask.promise.then(function (pdf) {
+        let textPromises = [];
+
+        for (let i = 1; i <= pdf.numPages; i++) {
+            let pagePromise = pdf.getPage(i).then(function (page) {
+                return page.getTextContent().then(function (text) {
+                    let pageText = text.items.map(item => item.str).join(" ");
+                    return `\n\n--- Page ${page.pageNumber} ---\n\n` + pageText;
+                });
+            });
+            textPromises.push(pagePromise);
+        }
+
+        Promise.all(textPromises).then(function (pages) {
+            textContent = pages.join("\n\n");
+            utterance.text = textContent;
+        });
+    });
+}
+
+// Play audio
+function playAudio() {
+    if (isPaused) {
+        speechSynthesis.resume();
+    } else {
+        speechSynthesis.cancel();
+        utterance.text = textContent;
+        speechSynthesis.speak(utterance);
+        startTime = Date.now(); // Record the start time
+    }
+    isPaused = false;
+}
+
+// Pause audio
+function pauseAudio() {
+    speechSynthesis.pause();
+    isPaused = true;
+}
+
+// Stop audio
+function stopAudio() {
+    speechSynthesis.cancel();
+    isPaused = false;
+}
+
+// Set speech speed
+function setSpeed(speed) {
+    utterance.rate = parseFloat(speed); // Ensure speed is a number
+    if (speechSynthesis.speaking) {
+        speechSynthesis.cancel(); // Stop current speech
+        speechSynthesis.speak(utterance); // Restart with new speed
+    }
+}
+
+// Set speech volume
+function setVolume(volume) {
+    utterance.volume = parseFloat(volume); // Ensure volume is a number
+    if (speechSynthesis.speaking) {
+        speechSynthesis.cancel(); // Stop current speech
+        speechSynthesis.speak(utterance); // Restart with new volume
+    }
+}
+
+// Skip forward by 5 seconds
+function skipForward() {
+    let currentPosition = (Date.now() - startTime) / 1000; // Current position in seconds
+    let newPosition = currentPosition + 5; // Skip 5 seconds forward
+    currentCharIndex = Math.min(newPosition * 50, textContent.length); // Approximate character index
+    utterance.text = textContent.slice(currentCharIndex);
+    speechSynthesis.cancel();
+    speechSynthesis.speak(utterance);
+    startTime = Date.now() - newPosition * 1000; // Adjust start time
+}
+
+// Skip backward by 5 seconds
+function skipBackward() {
+    let currentPosition = (Date.now() - startTime) / 1000; // Current position in seconds
+    let newPosition = Math.max(currentPosition - 5, 0); // Skip 5 seconds backward
+    currentCharIndex = Math.min(newPosition * 50, textContent.length); // Approximate character index
+    utterance.text = textContent.slice(currentCharIndex);
+    speechSynthesis.cancel();
+    speechSynthesis.speak(utterance);
+    startTime = Date.now() - newPosition * 1000; // Adjust start time
+}
+
+// Update progress bar
+utterance.onboundary = function (event) {
+    if (event.name === "word") {
+        currentCharIndex = event.charIndex;
+        updateProgressBar();
+    }
+};
+
+// Update progress bar
+function updateProgressBar() {
+    let progress = (currentCharIndex / textContent.length) * 100;
+    document.getElementById('progressBar').style.width = progress + '%';
+}
+
+// Initialize PDF and text
+document.addEventListener("DOMContentLoaded", function () {
+    let pdfUrl = "{{ material.file.url }}";
+    loadPDF(pdfUrl);
+    loadPDFText(pdfUrl);
+
+    // Update progress bar periodically
+    setInterval(updateProgressBar, 500);
+});
+    </script>
+    <script src="https://website-widgets.pages.dev/dist/sienna.min.js" defer></script>
+</body>
+</html>

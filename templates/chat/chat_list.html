@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="chat-container">
+    <div class="chat-header">
+        <h2>Chat Groups</h2>
+        <a href="{% url 'chat:create_group' %}" class="create-btn">+ Create New Group</a>
+    </div>
+
+    <div class="groups-grid">
+        {% for group in groups %}
+        <div class="group-card">
+            <h3>{{ group.name }}</h3>
+            <p>Created by: {{ group.created_by.username }}</p>
+            <p>Members: {{ group.members.count }}</p>
+            <a href="{% url 'chat:chat_room' group.id %}" class="join-btn">Join Chat</a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script src="https://cdn.botpress.cloud/webchat/v2.2/inject.js"></script>
+<script src="https://files.bpcontent.cloud/2025/03/31/14/20250331140545-GH0NBBA2.js"></script>
+    
+<style>
+    .chat-container {
+        max-width: 1200px;
+        margin: 20px auto;
+        padding: 20px;
+    }
+
+    .chat-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+    }
+
+    .create-btn {
+        background: #80071d;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 5px;
+        text-decoration: none;
+    }
+
+    .groups-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 20px;
+    }
+
+    .group-card {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .join-btn {
+        display: block;
+        background: #80071d;
+        color: white;
+        text-align: center;
+        padding: 8px;
+        border-radius: 4px;
+        text-decoration: none;
+        margin-top: 10px;
+    }
+    div.asw-footer{
+    display: none;
+}
+</style>
+<script src="https://website-widgets.pages.dev/dist/sienna.min.js" defer></script>
+{% endblock %}

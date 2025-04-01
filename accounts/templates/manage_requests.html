@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Requests</title>
+    <style>
+       
+        .container {
+            width: 90%;
+            margin: 20px auto;
+        }
+        .section-title {
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #fff;
+        }
+        .request-card, .notification-card {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 16px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+        }
+        .book-image-container {
+            flex: 0 0 100px;
+            text-align: center;
+        }
+        .book-image {
+            width: 80px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        .details-container {
+            flex: 1;
+        }
+        .details-container h2 {
+            margin-top: 0;
+            font-size: 20px;
+            color: var(--primary-color);
+        }
+        .details-container p {
+            margin: 5px 0;
+            font-size: 14px;
+            color: var(--primary-color);
+        }
+        .btn {
+            padding: 8px 16px;
+            font-size: 14px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .btn.accept {
+            background-color: #28a745;
+            color: #fff;
+        }
+        .btn.reject {
+            background-color: #dc3545;
+            color: #fff;
+        }
+.notifications-container {
+    display: flex;
+    flex-wrap: wrap; /* Allow wrapping if needed */
+    gap: 16px;
+    justify-content: center; /* Distribute evenly */
+    align-items: flex-start; /* Align items to the top */
+    width: 100%;
+}
+
+.notification-card {
+    background: var(--secondary-color);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 16px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    width: 60%; /* Adjust for side-by-side layout */
+    max-width: 400px; /* Prevent cards from stretching too wide */
+    box-sizing: border-box; /* Ensure padding doesn’t affect width */
+}
+
+.notification-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.notification-header {
+    display: flex;
+    flex-direction: column; /* Stack items */
+    justify-content: center;
+    align-items: flex-start;
+    width: 48%; /* Make it full width inside card */
+    height: 60px;
+    overflow: hidden;
+    padding: 10px;
+}
+
+.notification-header h4 {
+    width: 100%;
+    font-size: 16px;
+    color: var(--text-color-light);
+    margin: 0;
+    word-wrap: break-word;
+    white-space: normal;
+    line-height: 1.4;
+}
+
+.notification-header small {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.7);
+    display: block;
+    margin-top: 4px;
+}
+
+.notification-body {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.notification-body p {
+    margin: 8px 0;
+}
+
+/* Make sure cards adjust properly on smaller screens */
+@media (max-width: 768px) {
+    .notifications-container {
+        flex-direction: column; /* Stack on small screens */
+    }
+
+    .notification-card {
+        width: 100%; /* Make full width on smaller screens */
+    }
+}
+
+
+.status-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.status-badge {
+    background-color: var(--highlight-color);
+    color: var(--text-color-light);
+}
+
+.no-notifications {
+    text-align: center;
+    color: var(--text-color-light);
+    font-size: 16px;
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+}
+        .no-requests{
+            text-align: center;
+            color: #fff;
+            font-size: 16px;
+        }
+        /* Footer */
+        .footer {
+            text-align: center;
+            background-color: #333;
+            color: white;
+            padding: 15px 10px;
+        }
+
+        .footer a {
+            color: var(--primary-color);
+            text-decoration: none;
+            margin: 0 10px;
+        }
+        :root {
+    --primary-color: #0A183D;
+    --secondary-color: #08192D;
+    --highlight-color: #F9295A;
+    --text-color-light: #ffffff;
+}
+
+body {
+            font-family: Arial, sans-serif;
+            background-color: var(--primary-color);
+            color: var(--text-color-light);
+            max-width: 100vw;
+            overflow-x: hidden;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--secondary-color);
+            padding: 15px 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--text-color-light);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-color-light);
+            font-size: 16px;
+        }
+
+        .nav-links a:hover {
+            color: var(--highlight-color);
+        }
+
+        .user-icon {
+            width: 30px;
+            height: 30px;
+            background-color: var(--highlight-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .user-icon img {
+            width: 20px;
+            height: 20px;
+        }
+        div.asw-footer{
+    display: none;
+}
+     
+
+    </style>
+</head>
+<body>
+   
+        <!-- Header Section -->
+        <div class="header">
+            <div class="logo">Edubridge</div>
+            <div class="nav-links">
+                <a href="{% url 'home' %}">Home</a>
+                <a href="{% url 'Donate' %}">Donate</a>
+                <a href="{% url 'manage_requests' %}">Request</a>
+                <a href="{% url 'chat:chat_list' %}" >Alumini Connect</a>
+            </div>
+          
+        </div>
+    
+    <div class="container">
+<!-- Request Section -->
+<h2 class="section-title">Manage Requests</h2>
+
+<!-- Donation Requests -->
+<h3>Donation Requests</h3>
+{% for request in donation_requests %}
+<div class="request-card">
+    <div class="book-image-container">
+        {% if request.book.image %}
+            <img src="{{ request.book.image.url }}" alt="{{ request.book.textbook_name }}" class="book-image">
+        {% endif %}
+    </div>
+    <div class="details-container">
+        <h2>{{ request.book.textbook_name }}</h2>
+        <p><strong>Author:</strong> {{ request.book.author_name }}</p>
+        <p><strong>Subject:</strong> {{ request.book.subject }}</p>
+        <p><strong>Semester:</strong> {{ request.book.semester }}</p>
+        <p><strong>Requested On:</strong> {{ request.created_at|date:"Y-m-d" }}</p>
+        <p><strong>Donation Date:</strong> {{ request.donation_date }}</p>
+        <p><strong>Donation Time:</strong> {{ request.donation_time }}</p>
+        <p><strong>Place:</strong> {{ request.donation_place }}</p>
+        
+        {% if request.status == "Pending" %}
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="request_id" value="{{ request.id }}">
+            <button class="btn accept" name="action" value="accept">Accept</button>
+            <button class="btn reject" name="action" value="reject">Reject</button>
+        </form>
+        {% endif %}
+    </div>
+</div>
+{% empty %} 
+<p class="no-requests">No pending donation requests.</p>
+{% endfor %}
+
+<!-- Sell Requests -->
+<h3>Sell Requests</h3>
+{% for request in sell_requests %}
+<div class="request-card">
+    <div class="book-image-container">
+        {% if request.textbook.image %}
+            <img src="{{ request.textbook.image.url }}" alt="{{ request.textbook.textbook_name }}" class="book-image">
+        {% endif %}
+    </div>
+    <div class="details-container">
+        <h2>{{ request.textbook.textbook_name }}</h2>
+        <p><strong>Author:</strong> {{ request.textbook.author }}</p>
+        <p><strong>Subject:</strong> {{ request.textbook.subject }}</p>
+        <p><strong>Semester:</strong> {{ request.textbook.semester }}</p>
+        <p><strong>Requested On:</strong> {{ request.created_at|date:"Y-m-d" }}</p>
+        <p><strong>Collection Date:</strong> {{ request.date }}</p>
+        <p><strong>Collection Time:</strong> {{ request.time }}</p>
+        <p><strong>Collection Place:</strong> {{ request.place }}</p>
+        
+        {% if request.status == "Pending" %}
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="sell_request_id" value="{{ request.id }}">
+            <button class="btn accept" name="sell_action" value="accept">Accept</button>
+            <button class="btn reject" name="sell_action" value="reject">Reject</button>
+        </form>
+        {% endif %}
+    </div>
+</div>
+{% empty %} 
+<p class="no-requests">No pending sell requests.</p>
+{% endfor %}
+
+
+<h2 class="section-title">Requests Pending</h2>
+
+{% with has_pending=False %}
+
+    <!-- Pending Donation Requests Sent by User -->
+    {% for request in sent_requests %}
+        {% if request.status == "Pending" %}
+            {% with has_pending=True %}
+            {% endwith %}
+            <div class="request-card" style="color: #08192D;">
+                <h4>{{ request.book.textbook_name }}</h4>
+                <p><strong>Donor:</strong> {{ request.donor.username }}</p>
+                <p><strong>Status:</strong> <span class="status-badge">{{ request.status }}</span></p>
+                <p><strong>Requested On:</strong> {{ request.created_at|date:"Y-m-d H:i" }}</p>
+            </div>
+        {% endif %}
+    {% endfor %}
+
+    <!-- Pending Sell Requests Sent by User -->
+    {% for request in sent_sell_requests %}
+        {% if request.status == "Pending" %}
+            {% with has_pending=True %}
+            {% endwith %}
+            <div class="request-card" style="color: #08192D;">
+                <h4>{{ request.textbook.name }}</h4>
+                <p><strong>Seller:</strong> {{ request.textbook.user.username }}</p>
+                <p><strong>Price:</strong> ₹{{ request.textbook.price }}</p>
+                <p><strong>Status:</strong> <span class="status-badge">{{ request.status }}</span></p>
+                <p><strong>Requested On:</strong> {{ request.created_at|date:"Y-m-d H:i" }}</p>
+            </div>
+        {% endif %}
+    {% endfor %}
+
+    {% if not has_pending %}
+        <p align="center">No pending requests at the moment.</p>
+    {% endif %}
+
+{% endwith %}
+
+        
+<!-- Notifications Section -->
+<h2 class="section-title">Notifications</h2>
+<div class="notifications-container">
+    {% if notifications or sell_notifications %}
+        {% for notification in notifications %}
+            {% if notification.status == "Accepted" %}
+                <div class="notification-card">
+                    <div class="notification-header">
+                        <h4>{{ notification.book.textbook_name }}</h4>
+                    </div>
+                    <div class="notification-body">
+                        {% if user == notification.receiver %}
+                            <!-- Receiver's View: Show Donor Details -->
+                            <p><strong>Donor:</strong> {{ notification.donor.username }}</p>
+                            <p><strong>Donor Phone:</strong> {{ notification.donor.phone_number }}</p>
+                        {% elif user == notification.donor %}
+                            <!-- Donor's View: Show Receiver Details -->
+                            <p><strong>Receiver:</strong> {{ notification.receiver.username }}</p>
+                            <p><strong>Receiver Phone:</strong> {{ notification.receiver.phone_number }}</p>
+                        {% endif %}
+                        
+                        <!-- Common Details -->
+                        <p><strong>Donation Time:</strong> {{ notification.donation_time }}</p>
+                        <p><strong>Donation Date:</strong> {{ notification.donation_date }}</p>
+                        <p><strong>Donation Place:</strong> {{ notification.donation_place }}</p>
+                        <p><strong>Status:</strong> <span class="status-badge">{{ notification.status }}</span></p>
+                        <small>{{ notification.created_at|date:"Y-m-d H:i" }}</small>
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+
+        <!-- Selling Requests Notifications -->
+        {% for sell_notification in sell_notifications %}
+            {% if sell_notification.status == "Accepted" %}
+                <div class="notification-card">
+                    <div class="notification-header">
+                        <h4>{{ sell_notification.sell_request.textbook.name }}</h4>
+                    </div>
+                    <div class="notification-body">
+                        {% if user == sell_notification.buyer %}
+                            <!-- Buyer View: Show Seller Details -->
+                            <p><strong>Seller:</strong> {{ sell_notification.seller.username }}</p>
+                            <p><strong>Seller Phone:</strong> {{ sell_notification.seller.phone_number }}</p>
+                        {% elif user == sell_notification.seller %}
+                            <!-- Seller View: Show Buyer Details -->
+                            <p><strong>Buyer:</strong> {{ sell_notification.buyer.username }}</p>
+                            <p><strong>Buyer Phone:</strong> {{ sell_notification.buyer.phone_number }}</p>
+                        {% endif %}
+
+                        <!-- Common Details -->
+                        <p><strong>Meeting Time:</strong> {{ sell_notification.meeting_time }}</p>
+                        <p><strong>Meeting Date:</strong> {{ sell_notification.meeting_date }}</p>
+                        <p><strong>Meeting Place:</strong> {{ sell_notification.meeting_place }}</p>
+                        <p><strong>Status:</strong> <span class="status-badge">{{ sell_notification.status }}</span></p>
+                        <small>{{ sell_notification.created_at|date:"Y-m-d H:i" }}</small>
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+    {% else %}
+        <p class="no-notifications">No notifications available.</p>
+    {% endif %}
+</div>
+    </div>
+    <script>
+        function toggleMenu() {
+            const menu = document.getElementById('popupMenu');
+            menu.classList.toggle('open');
+        }
+
+        // Close popup menu on outside click
+        document.addEventListener('click', function (e) {
+            const menu = document.getElementById('popupMenu');
+            const hamburger = document.querySelector('.hamburger');
+
+            if (!menu.contains(e.target) && !hamburger.contains(e.target)) {
+                menu.classList.remove('open');
+            }
+        });
+    </script>
+   <script src="https://website-widgets.pages.dev/dist/sienna.min.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard</title>
+    {% load static %}
+    <style>
+        :root {
+            --primary-color: #0A183D;
+            --secondary-color: #08192D;
+            --highlight-color: #F9295A;
+            --text-color-light: #ffffff;
+            --card-bg-color: #1A2A4D;
+            --card-hover-bg-color: #22345D;
+            --detail-bg-color: #112244;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: var(--primary-color);
+            color: var(--text-color-light);
+            max-width: 100vw;
+            overflow-x: hidden;
+            margin: 0;
+            padding: 0;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--secondary-color);
+            padding: 15px 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--text-color-light);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-color-light);
+            font-size: 16px;
+        }
+
+        .nav-links a:hover {
+            color: var(--highlight-color);
+        }
+
+        .dashboard-container {
+            padding: 20px;
+            margin: 0 10%;
+        }
+
+        .dashboard-title {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            color: var(--highlight-color);
+        }
+
+        .user-info {
+            background-color: var(--detail-bg-color);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .user-info ul {
+            list-style-type: none;
+            padding: 0;
+            font-size: 16px;
+        }
+
+        .user-info ul li {
+            margin: 10px 0;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+        }
+
+        .card-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .card {
+            background-color: var(--card-bg-color);
+            border-radius: 12px;
+            padding: 20px;
+            width: 300px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, background-color 0.3s ease;
+            text-align: center;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            background-color: var(--card-hover-bg-color);
+        }
+
+        .card h3 {
+            margin-top: 0;
+            color: var(--highlight-color);
+            font-size: 20px;
+        }
+
+        .card p {
+            margin: 5px 0;
+        }
+
+        .delete-btn {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 8px 15px;
+            background-color: red;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .delete-btn:hover {
+            background-color: darkred;
+        }
+
+        .footer {
+            background-color: var(--secondary-color);
+            color: var(--text-color-light);
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+        }
+        div.asw-footer{
+    display: none;
+}
+    </style>
+</head>
+<body>
+
+    <!-- Header Section -->
+    <div class="header">
+        <div class="logo">Edubridge</div>
+        <div class="nav-links">
+            {% if user.role == 'alumni' %}
+                <a href="{% url 'AlumniFrontPage' %}">Home</a>
+            {% else %}
+                <a href="{% url 'home' %}">Home</a>
+            {% endif %}
+            <a href="{% url 'Donate' %}">Donate</a>
+            {% if user.role != 'alumni' %}
+                <a href="{% url 'manage_requests' %}">Request</a>
+            {% endif %}
+            <a href="{% url 'chat:chat_list' %}">Alumni Chat</a>
+        </div>
+    </div>
+
+    <!-- User Dashboard Content -->
+    <div class="dashboard-container">
+        <h2 class="dashboard-title">Welcome, {{ user.username }}!</h2>
+        
+        <div class="user-info">
+            <h3>Your Details</h3>
+            <ul>
+                <li><strong>Email:</strong> {{ user.email }}</li>
+                <li><strong>Department:</strong> {{ user.department_name }}</li>
+                <li><strong>Semester:</strong> {{ user.semester }}</li>
+                <li><strong>Admission Number:</strong> {{ user.admission_number }}</li>
+                <li><strong>Phone Number:</strong> {{ user.phone_number }}</li>
+            </ul>
+        </div>
+
+        <h3>Your Donated Books</h3>
+<div class="card-container">
+    {% for book in donated_books %}
+    <div class="card">
+        <h3>{{ book.textbook_name }}</h3>
+        <p><strong>Author:</strong> {{ book.author_name }}</p>
+        <p><strong>Subject:</strong> {{ book.subject }}</p>
+        <p><strong>Semester:</strong> Semester {{ book.semester }}</p>
+        <p><strong>Price:</strong> ₹{{ book.price }}</p>
+        <a href="{% url 'delete_book' book.id %}" class="delete-btn">Delete</a>
+
+        {% if not book.available %}
+        <form action="{% url 'enable_availability' book.id %}" method="POST" style="display: inline;">
+            {% csrf_token %}
+            <button type="submit" class="delete-btn" style="background-color: green;">Make Available</button>
+        </form>
+        {% endif %}
+    </div>
+    {% empty %}
+    <p>No books donated yet.</p>
+    {% endfor %}
+</div>
+
+        <!-- Paid Books Section -->
+        <h3>Your Sold Books</h3>
+<div class="card-container">
+    {% for book in paid_books %}
+    <div class="card">
+        <h3>{{ book.name }}</h3>
+        <p><strong>Author:</strong> {{ book.author }}</p>
+        <p><strong>Subject:</strong> {{ book.subject }}</p>
+        <p><strong>Semester:</strong> Semester {{ book.semester }}</p>
+        <p><strong>Price:</strong> ₹{{ book.price }}</p>
+        <p><strong>Feedback:</strong> {{ book.feedback }}</p>
+        <p><strong>Rating:</strong> {{ book.rating }} Stars</p>
+        <a href="{% url 'delete_paid_book' book.id %}" class="delete-btn">Delete</a>
+
+        {% if not book.available %}
+        <form action="{% url 'enable_availability' book.id %}" method="POST" style="display: inline;">
+            {% csrf_token %}
+            <button type="submit" class="delete-btn" style="background-color: green;">Make Available</button>
+        </form>
+        {% endif %}
+    </div>
+    {% empty %}
+    <p>No books purchased yet.</p>
+    {% endfor %}
+</div>
+
+<script src="https://website-widgets.pages.dev/dist/sienna.min.js" defer></script>
+</div>
+    <footer class="footer">
+        <p>&copy; 2025 Edubridge. All Rights Reserved.</p>
+    </footer>
+
+</body>
+</html>

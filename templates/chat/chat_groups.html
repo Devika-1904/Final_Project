@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="chat-container">
+    <div class="header">
+        <h2>Alumni Chat Groups</h2>
+        <button class="create-group-btn" onclick="location.href='{% url 'chat:create_group' %}'">+ Create New Group</button>
+    </div>
+
+    <div class="groups-list">
+        {% for group in groups %}
+        <div class="group-card">
+            <h3>{{ group.name }}</h3>
+            <div class="group-info">
+                <p>Created by: {{ group.created_by.username }}</p>
+                <p>Members: {{ group.members.count }}</p>
+            </div>
+            <button class="join-chat-btn" onclick="location.href='{% url 'chat:join_chat' group.id %}'">Join Chat</button>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+    .chat-container {
+        padding: 20px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .create-group-btn {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .groups-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 20px;
+    }
+
+    .group-card {
+        background: white;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .group-info {
+        margin: 10px 0;
+        color: #666;
+    }
+
+    .join-chat-btn {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 4px;
+        cursor: pointer;
+        width: 100%;
+    }
+
+    .join-chat-btn:hover {
+        background-color: #0056b3;
+    }
+    div.asw-footer{
+    display: none;
+}
+</style>
+<script src="https://website-widgets.pages.dev/dist/sienna.min.js" defer></script>
+{% endblock %}
